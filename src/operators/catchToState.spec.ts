@@ -1,6 +1,6 @@
 import { Subject, of, throwError } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
-import { catchToState } from './catch-to-state';
+import { catchToState } from './catchToState';
 
 describe('catchToState', () => {
   describe('with a callback indicator (React-style setState)', () => {

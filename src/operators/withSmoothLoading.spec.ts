@@ -1,6 +1,6 @@
 import { Subject, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { withSmoothLoading } from './with-smooth-loading';
+import { withSmoothLoading } from './withSmoothLoading';
 
 const MIN_DURATION = 500;
 

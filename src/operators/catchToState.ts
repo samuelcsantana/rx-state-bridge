@@ -1,6 +1,6 @@
 import { catchError, EMPTY, throwError, type Observable, type OperatorFunction } from 'rxjs';
 import type { StateIndicator } from '../types';
-import { applyIndicator } from '../utils/apply-indicator';
+import { applyIndicator } from '../utils/applyIndicator';
 
 /** Options controlling {@link catchToState}'s behavior after an error is captured. */
 export interface CatchToStateOptions {

@@ -1,6 +1,6 @@
 import { Subject, of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
-import { bindTo } from './bind-to';
+import { bindTo } from './bindTo';
 
 describe('bindTo', () => {
   describe('with a callback indicator (React-style setState)', () => {

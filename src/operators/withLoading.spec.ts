@@ -1,6 +1,6 @@
 import { Subject, of, throwError } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
-import { withLoading } from './with-loading';
+import { withLoading } from './withLoading';
 
 describe('withLoading', () => {
   describe('with a callback indicator (React-style setState)', () => {

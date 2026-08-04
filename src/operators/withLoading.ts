@@ -1,6 +1,6 @@
 import { defer, finalize, type MonoTypeOperatorFunction, type Observable } from 'rxjs';
 import type { StateIndicator } from '../types';
-import { applyIndicator } from '../utils/apply-indicator';
+import { applyIndicator } from '../utils/applyIndicator';
 
 /**
  * Drives a boolean loading indicator around a source Observable's lifecycle.

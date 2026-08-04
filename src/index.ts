@@ -1,7 +1,7 @@
 export type { StateIndicator } from './types';
 
-export { withLoading } from './operators/with-loading';
-export { withSmoothLoading } from './operators/with-smooth-loading';
-export { catchToState, type CatchToStateOptions } from './operators/catch-to-state';
-export { withTemporarySuccess } from './operators/with-temporary-success';
-export { bindTo } from './operators/bind-to';
+export { withLoading } from './operators/withLoading';
+export { withSmoothLoading } from './operators/withSmoothLoading';
+export { catchToState, type CatchToStateOptions } from './operators/catchToState';
+export { withTemporarySuccess } from './operators/withTemporarySuccess';
+export { bindTo } from './operators/bindTo';

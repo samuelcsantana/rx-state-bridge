@@ -1,6 +1,6 @@
 import { tap, type MonoTypeOperatorFunction, type Observable } from 'rxjs';
 import type { StateIndicator } from '../types';
-import { applyIndicator } from '../utils/apply-indicator';
+import { applyIndicator } from '../utils/applyIndicator';
 
 /**
  * Convenience operator that pipes every emitted value directly into a state,

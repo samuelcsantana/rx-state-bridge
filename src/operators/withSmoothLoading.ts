@@ -1,6 +1,6 @@
 import { defer, finalize, tap, timer, type MonoTypeOperatorFunction, type Observable } from 'rxjs';
 import type { StateIndicator } from '../types';
-import { applyIndicator } from '../utils/apply-indicator';
+import { applyIndicator } from '../utils/applyIndicator';
 
 /**
  * Like {@link withLoading}, but prevents the "flicker" UX problem where a

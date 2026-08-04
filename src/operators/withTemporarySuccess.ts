@@ -1,6 +1,6 @@
 import { tap, timer, type MonoTypeOperatorFunction, type Observable } from 'rxjs';
 import type { StateIndicator } from '../types';
-import { applyIndicator } from '../utils/apply-indicator';
+import { applyIndicator } from '../utils/applyIndicator';
 
 /**
  * Toggles a boolean indicator to `true` when the source Observable completes

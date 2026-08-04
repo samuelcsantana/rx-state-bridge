@@ -1,6 +1,6 @@
 import { Subject, of, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { withTemporarySuccess } from './with-temporary-success';
+import { withTemporarySuccess } from './withTemporarySuccess';
 
 const DURATION = 2000;
 
