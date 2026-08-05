@@ -60,8 +60,8 @@ readonly user$ = this.fetchUser(this.id).pipe(
 
 Live, editable demos for every operator — one card per operator, running against a fake in-memory API (no real network):
 
-- [`examples/react`](./examples/react) — [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react)
-- [`examples/angular`](./examples/angular) — [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/angular)
+- [`examples/react`](./examples/react) — [open in StackBlitz →](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react)
+- [`examples/angular`](./examples/angular) — [open in StackBlitz →](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/angular)
 
 Or run either locally:
 
