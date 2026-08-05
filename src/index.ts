@@ -8,3 +8,5 @@ export {
   type WithTemporarySuccessOptions,
 } from './operators/withTemporarySuccess';
 export { bindTo } from './operators/bindTo';
+export { bindRequestState, type RequestState } from './operators/bindRequestState';
+export { combineLoading } from './utils/combineLoading';

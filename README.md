@@ -65,6 +65,8 @@ readonly user$ = this.fetchUser(this.id).pipe(
 | `catchToState(errorIndicator, options?)`              | Captures errors into `errorIndicator`, then completes gracefully (default) or re-throws (`{ rethrow: true }`).                                                                                    |
 | `withTemporarySuccess(indicator, duration, options?)` | Sets `indicator` to `true` on successful completion, then resets it to `false` after `duration` ms. Completion itself is never delayed — pass `{ signal }` to cancel a still-pending reset early. |
 | `bindTo(state)`                                       | Writes every emitted value into `state`, forwarding it downstream unchanged.                                                                                                                      |
+| `bindRequestState(indicator, options?)`               | Fuses `withLoading` + `catchToState` + `bindTo` into one write: sets `indicator` to `{ loading, error, data }` across the stream's lifecycle.                                                     |
+| `combineLoading(...values)`                           | Plain helper (not an operator) that ORs several loading booleans into one. Call it inside your own render/`computed()`.                                                                           |
 
 All operators accept a `StateIndicator<T>`:
 
@@ -93,6 +95,47 @@ useEffect(() => {
 ```
 
 `withSmoothLoading`, by contrast, needs no such option: unsubscribing at any point — including mid-way through its own `minDuration` grace period — always cancels the pending timer and resets the indicator immediately.
+
+### Collapsing `loading`/`error`/`data` into one state with `bindRequestState`
+
+The [Quick example](#quick-example) above wires three separate state setters. `bindRequestState` collapses them into one:
+
+```ts
+// Before — three setters, three operators
+const [data, setData] = useState<User | null>(null);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState<unknown>(null);
+
+useEffect(() => {
+  const sub = fetchUser$(id)
+    .pipe(withLoading(setLoading), catchToState(setError), bindTo(setData))
+    .subscribe();
+  return () => sub.unsubscribe();
+}, [id]);
+
+// After — one setter, one operator
+const [user, setUser] = useState<RequestState<User>>({ loading: false, error: null, data: null });
+
+useEffect(() => {
+  const sub = fetchUser$(id).pipe(bindRequestState(setUser)).subscribe();
+  return () => sub.unsubscribe();
+}, [id]);
+```
+
+`data` is only ever overwritten by a new emission — an error never clears a previously-received value, so the last good result stays visible alongside the error. Reach for the individual operators instead when you need `withSmoothLoading`'s flicker-free timing or `withTemporarySuccess`'s toast-style feedback; `bindRequestState` covers the plain loading/error/data case.
+
+### Combining multiple loading flags with `combineLoading`
+
+For a dashboard driving several independent, unrelated fetches that should collapse into one spinner:
+
+```ts
+const [usersLoading, setUsersLoading] = useState(false);
+const [ordersLoading, setOrdersLoading] = useState(false);
+
+const isAnythingLoading = combineLoading(usersLoading, ordersLoading);
+```
+
+It's a plain function, not an RxJS operator — call it inside your own render/`computed()` so it re-evaluates whenever any underlying value changes.
 
 ## Development
 
