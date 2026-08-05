@@ -1,6 +1,6 @@
 {
   "name": "rx-state-bridge",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Framework-agnostic RxJS operators that bridge async streams with UI state primitives (React Hooks, Angular Signals, Vue Refs) — declarative loading, error and success feedback with zero boilerplate.",
   "license": "MIT",
   "author": "Samuel Santana",
