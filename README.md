@@ -2,7 +2,6 @@
 
 [![npm version](https://img.shields.io/npm/v/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
 [![npm downloads](https://img.shields.io/npm/dm/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
-[![Bundle size](https://img.shields.io/bundlephobia/minzip/rx-state-bridge)](https://bundlephobia.com/package/rx-state-bridge)
 [![Build Status](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](https://www.typescriptlang.org/)
