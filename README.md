@@ -1,4 +1,8 @@
+<div align="center">
+
 # rx-state-bridge
+
+Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method.
 
 [![npm version](https://img.shields.io/npm/v/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
 [![npm downloads](https://img.shields.io/npm/dm/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
@@ -7,7 +11,11 @@
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 
-Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method. Stop hand-rolling `loading`/`error`/`success` boilerplate around every API call.
+![The examples/react demo: six cards, one per operator, showing live loading/error/success states](./.github/assets/screenshot.png)
+
+</div>
+
+Stop hand-rolling `loading`/`error`/`success` boilerplate around every API call.
 
 - **Zero dependencies** (RxJS is a peer dependency only)
 - **Framework-agnostic** — no React/Angular/Vue imports, ever
