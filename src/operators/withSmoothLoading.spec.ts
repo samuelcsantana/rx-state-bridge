@@ -73,6 +73,61 @@ describe('withSmoothLoading', () => {
       expect(setLoading).toHaveBeenCalledTimes(2);
     });
 
+    it('Cenario D — unsubscribing DURING the grace-period window cancels the pending timer (no leak, no late write)', () => {
+      const setLoading = vi.fn<(value: boolean) => void>();
+      const source$ = new Subject<number>();
+
+      const subscription = source$.pipe(withSmoothLoading(setLoading, MIN_DURATION)).subscribe();
+
+      vi.advanceTimersByTime(50);
+      source$.next(1);
+      source$.complete(); // settles fast -> schedules a grace timer for the remaining 450ms
+
+      expect(setLoading).toHaveBeenCalledTimes(1); // still just the initial `true`
+      expect(vi.getTimerCount()).toBe(1); // grace timer pending
+
+      subscription.unsubscribe();
+
+      expect(vi.getTimerCount()).toBe(0); // the pending timer must be cancelled, not merely orphaned
+      expect(setLoading).toHaveBeenNthCalledWith(2, false);
+      expect(setLoading).toHaveBeenCalledTimes(2);
+
+      // Advancing past where the grace timer would have fired must not
+      // produce any further (stale) call.
+      vi.advanceTimersByTime(MIN_DURATION);
+      expect(setLoading).toHaveBeenCalledTimes(2);
+    });
+
+    it('a fast request, properly torn down before a new one starts, never leaves a stale write behind for a still-loading successor (switchMap / effect-cleanup pattern)', () => {
+      const shared = vi.fn<(value: boolean) => void>();
+      const requestA$ = new Subject<string>();
+      const requestB$ = new Subject<string>();
+
+      const subA = requestA$.pipe(withSmoothLoading(shared, MIN_DURATION)).subscribe();
+      vi.advanceTimersByTime(10);
+      requestA$.next('a');
+      requestA$.complete(); // would have scheduled a stale `false` at t=500 (10 + 490)
+
+      // Real consumers (React effect cleanup, switchMap cancelling the old
+      // inner subscription) unsubscribe the old one before starting a new one.
+      subA.unsubscribe();
+      expect(vi.getTimerCount()).toBe(0);
+
+      const subB = requestB$.pipe(withSmoothLoading(shared, MIN_DURATION)).subscribe();
+      const callsBeforeWindow = shared.mock.calls.length;
+
+      // Advance exactly to the moment A's now-cancelled timer would have fired.
+      vi.advanceTimersByTime(490);
+      expect(shared.mock.calls.slice(callsBeforeWindow)).toEqual([]); // nothing stomped B's indicator while it's still in flight
+
+      requestB$.next('b');
+      requestB$.complete();
+      vi.advanceTimersByTime(MIN_DURATION);
+      expect(shared).toHaveBeenLastCalledWith(false);
+
+      subB.unsubscribe();
+    });
+
     it('honors minDuration on error the same way it does on success (no premature flicker)', () => {
       const setLoading = vi.fn<(value: boolean) => void>();
       const source$ = new Subject<number>();

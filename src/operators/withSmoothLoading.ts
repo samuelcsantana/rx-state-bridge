@@ -1,4 +1,4 @@
-import { defer, finalize, tap, timer, type MonoTypeOperatorFunction, type Observable } from 'rxjs';
+import { defer, Observable, type MonoTypeOperatorFunction } from 'rxjs';
 import type { StateIndicator } from '../types';
 import { applyIndicator } from '../utils/applyIndicator';
 
@@ -12,13 +12,16 @@ import { applyIndicator } from '../utils/applyIndicator';
  *
  * - **Natural termination** (the source completes or errors): the elapsed
  *   time is compared against `minDuration`. If the stream finished before
- *   the minimum has elapsed, turning the indicator back to `false` is
- *   delayed until the remainder has passed (a single self-clearing
- *   `timer`). If the minimum was already met, it turns off immediately.
+ *   the minimum has elapsed, both the indicator flip *and* the downstream
+ *   completion/error notification are held until the remainder has passed
+ *   (bounded by `minDuration`). If the minimum was already met, both fire
+ *   immediately.
  * - **Explicit early unsubscribe** (e.g. component unmount, a `switchMap`
- *   cancelling a stale request): the grace-period timer is never created in
- *   the first place and the indicator is reset to `false` immediately —
- *   there is nothing left running in the background to leak.
+ *   cancelling a stale request) — whether that happens before the source
+ *   settles *or* during the grace-period wait above: the pending timer is
+ *   cancelled and the indicator is reset to `false` immediately. There is
+ *   nothing left running in the background to leak, and nothing can write
+ *   a stale value into an indicator you've already moved on from.
  *
  * @param indicator - The state setter toggled between `true` and `false`.
  * @param minDuration - Minimum time (ms) the loading indicator must stay `true`.
@@ -43,33 +46,46 @@ export function withSmoothLoading<T>(
     defer(() => {
       applyIndicator(indicator, true);
       const startedAt = Date.now();
-      let settled = false;
 
-      return source.pipe(
-        tap({
-          complete: () => {
-            settled = true;
-          },
-          error: () => {
-            settled = true;
-          },
-        }),
-        finalize(() => {
-          if (!settled) {
-            applyIndicator(indicator, false);
-            return;
-          }
+      return new Observable<T>((subscriber) => {
+        let graceTimer: ReturnType<typeof setTimeout> | undefined;
+        let resolved = false;
 
-          const elapsed = Date.now() - startedAt;
-          const remaining = minDuration - elapsed;
+        // Idempotent: safe to call once from the natural settle path below
+        // and again from the teardown function without double-firing.
+        const finish = () => {
+          if (resolved) return;
+          resolved = true;
+          if (graceTimer !== undefined) clearTimeout(graceTimer);
+          applyIndicator(indicator, false);
+        };
+
+        const settle = (emit: () => void) => {
+          const remaining = minDuration - (Date.now() - startedAt);
 
           if (remaining <= 0) {
-            applyIndicator(indicator, false);
+            finish();
+            emit();
             return;
           }
 
-          timer(remaining).subscribe(() => applyIndicator(indicator, false));
-        }),
-      );
+          graceTimer = setTimeout(() => {
+            graceTimer = undefined;
+            finish();
+            emit();
+          }, remaining);
+        };
+
+        const sourceSubscription = source.subscribe({
+          next: (value) => subscriber.next(value),
+          error: (err) => settle(() => subscriber.error(err)),
+          complete: () => settle(() => subscriber.complete()),
+        });
+
+        return () => {
+          sourceSubscription.unsubscribe();
+          finish();
+        };
+      });
     });
 }

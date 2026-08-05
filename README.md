@@ -1,5 +1,8 @@
 # rx-state-bridge
 
+[![npm version](https://img.shields.io/npm/v/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
+[![npm downloads](https://img.shields.io/npm/dm/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/rx-state-bridge)](https://bundlephobia.com/package/rx-state-bridge)
 [![Build Status](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](https://www.typescriptlang.org/)
@@ -55,19 +58,41 @@ readonly user$ = this.fetchUser(this.id).pipe(
 
 ## API
 
-| Operator                                    | Purpose                                                                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `withLoading(indicator)`                    | Sets `indicator` to `true` on subscribe, `false` on completion/error/unsubscribe.                              |
-| `withSmoothLoading(indicator, minDuration)` | Like `withLoading`, but keeps the indicator `true` for at least `minDuration` ms to avoid spinner flicker.     |
-| `catchToState(errorIndicator, options?)`    | Captures errors into `errorIndicator`, then completes gracefully (default) or re-throws (`{ rethrow: true }`). |
-| `withTemporarySuccess(indicator, duration)` | Sets `indicator` to `true` on successful completion, then resets it to `false` after `duration` ms.            |
-| `bindTo(state)`                             | Writes every emitted value into `state`, forwarding it downstream unchanged.                                   |
+| Operator                                              | Purpose                                                                                                                                                                                           |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `withLoading(indicator)`                              | Sets `indicator` to `true` on subscribe, `false` on completion/error/unsubscribe.                                                                                                                 |
+| `withSmoothLoading(indicator, minDuration)`           | Like `withLoading`, but keeps the indicator `true` for at least `minDuration` ms to avoid spinner flicker.                                                                                        |
+| `catchToState(errorIndicator, options?)`              | Captures errors into `errorIndicator`, then completes gracefully (default) or re-throws (`{ rethrow: true }`).                                                                                    |
+| `withTemporarySuccess(indicator, duration, options?)` | Sets `indicator` to `true` on successful completion, then resets it to `false` after `duration` ms. Completion itself is never delayed — pass `{ signal }` to cancel a still-pending reset early. |
+| `bindTo(state)`                                       | Writes every emitted value into `state`, forwarding it downstream unchanged.                                                                                                                      |
 
 All operators accept a `StateIndicator<T>`:
 
 ```ts
 type StateIndicator<T> = ((value: T) => void) | { set: (value: T) => void };
 ```
+
+### Cancelling a pending `withTemporarySuccess` reset
+
+`withTemporarySuccess` completes immediately — the `duration` timer is a background reset, not something that blocks whatever runs after `.subscribe()`. If you reuse the same indicator across overlapping or sequential requests (e.g. re-running an effect when `id` changes), a superseded request's reset could otherwise land after a newer one has already moved on. Pass an `AbortSignal` to cancel it explicitly:
+
+```ts
+const [saved, setSaved] = useState(false);
+
+useEffect(() => {
+  const controller = new AbortController();
+  const sub = save$(id)
+    .pipe(withTemporarySuccess(setSaved, 2000, { signal: controller.signal }))
+    .subscribe();
+
+  return () => {
+    controller.abort();
+    sub.unsubscribe();
+  };
+}, [id]);
+```
+
+`withSmoothLoading`, by contrast, needs no such option: unsubscribing at any point — including mid-way through its own `minDuration` grace period — always cancels the pending timer and resets the indicator immediately.
 
 ## Development
 

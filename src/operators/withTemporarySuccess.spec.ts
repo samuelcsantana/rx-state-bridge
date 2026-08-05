@@ -64,6 +64,70 @@ describe('withTemporarySuccess', () => {
       expect(setSaved).not.toHaveBeenCalled();
     });
 
+    it('with { signal }: aborting before duration elapses cancels the pending reset', () => {
+      const setSaved = vi.fn<(value: boolean) => void>();
+      const controller = new AbortController();
+
+      of('saved')
+        .pipe(withTemporarySuccess(setSaved, DURATION, { signal: controller.signal }))
+        .subscribe();
+
+      expect(setSaved).toHaveBeenNthCalledWith(1, true);
+      expect(vi.getTimerCount()).toBe(1);
+
+      vi.advanceTimersByTime(DURATION / 2);
+      controller.abort();
+
+      expect(vi.getTimerCount()).toBe(0); // the setTimeout must actually be cleared
+      expect(setSaved).toHaveBeenCalledTimes(1); // no `false` write follows the abort
+
+      vi.advanceTimersByTime(DURATION);
+      expect(setSaved).toHaveBeenCalledTimes(1); // still nothing — proves it was really cancelled, not just delayed
+    });
+
+    it('with { signal }: aborting AFTER the reset already fired is a harmless no-op', () => {
+      const setSaved = vi.fn<(value: boolean) => void>();
+      const controller = new AbortController();
+
+      of('saved')
+        .pipe(withTemporarySuccess(setSaved, DURATION, { signal: controller.signal }))
+        .subscribe();
+
+      vi.advanceTimersByTime(DURATION);
+      expect(setSaved).toHaveBeenNthCalledWith(2, false);
+      expect(setSaved).toHaveBeenCalledTimes(2);
+
+      controller.abort();
+      expect(setSaved).toHaveBeenCalledTimes(2); // no extra call, no error thrown
+    });
+
+    it('with { signal }: an already-aborted signal at completion time skips the indicator entirely', () => {
+      const setSaved = vi.fn<(value: boolean) => void>();
+      const controller = new AbortController();
+      controller.abort();
+
+      of('saved')
+        .pipe(withTemporarySuccess(setSaved, DURATION, { signal: controller.signal }))
+        .subscribe();
+
+      expect(setSaved).not.toHaveBeenCalled();
+      expect(vi.getTimerCount()).toBe(0);
+
+      vi.advanceTimersByTime(DURATION);
+      expect(setSaved).not.toHaveBeenCalled();
+    });
+
+    it('without a signal, behavior is byte-for-byte identical to the no-options default (non-breaking)', () => {
+      const setSaved = vi.fn<(value: boolean) => void>();
+
+      of('saved').pipe(withTemporarySuccess(setSaved, DURATION)).subscribe();
+
+      expect(setSaved).toHaveBeenNthCalledWith(1, true);
+      vi.advanceTimersByTime(DURATION);
+      expect(setSaved).toHaveBeenNthCalledWith(2, false);
+      expect(setSaved).toHaveBeenCalledTimes(2);
+    });
+
     it('never activates the success indicator when unsubscribed before completion', () => {
       const setSaved = vi.fn<(value: boolean) => void>();
       const source$ = new Subject<number>();
