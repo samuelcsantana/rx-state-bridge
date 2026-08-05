@@ -6,7 +6,13 @@ export interface User {
   name: string;
 }
 
-const NAMES = ['Ada Lovelace', 'Alan Turing', 'Grace Hopper', 'Margaret Hamilton', 'Katherine Johnson'];
+const NAMES = [
+  'Ada Lovelace',
+  'Alan Turing',
+  'Grace Hopper',
+  'Margaret Hamilton',
+  'Katherine Johnson',
+];
 
 /** A fake network call — no real requests, just a delay and an optional random failure. */
 export function fetchUser$(
