@@ -1,0 +1,10 @@
+<section class="card">
+  <h2>withLoading</h2>
+  <p>Boolean indicator, true on subscribe, false on completion.</p>
+  <button (click)="run()" [disabled]="loading()">
+    {{ loading() ? 'Loading…' : 'Fetch user' }}
+  </button>
+  @if (name()) {
+    <p class="result">{{ name() }}</p>
+  }
+</section>
