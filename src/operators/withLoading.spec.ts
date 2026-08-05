@@ -97,4 +97,40 @@ describe('withLoading', () => {
       expect(set).toHaveBeenNthCalledWith(2, false);
     });
   });
+
+  describe('with a real Angular-style callable WritableSignal', () => {
+    // BUG REGRESSION: a WritableSignal is itself callable (`signal()` reads
+    // the value), so `typeof indicator === 'function'` used to match it
+    // before its `.set` was ever checked — silently calling the signal as a
+    // getter with an ignored argument instead of writing through `.set()`.
+    // This reproduces the exact shape (callable + `.set`) without importing
+    // `@angular/core`, which this package has no dependency on.
+    function createFakeSignal(initial: boolean) {
+      let current = initial;
+      const read = (() => current) as { (): boolean; set: (value: boolean) => void };
+      read.set = (value: boolean) => {
+        current = value;
+      };
+      return read;
+    }
+
+    it('actually updates the signal value through the full operator pipeline', () => {
+      const loading = createFakeSignal(false);
+
+      of('done').pipe(withLoading(loading)).subscribe();
+
+      // Reading the signal proves .set() was really called, not just that
+      // some function was invoked — before the fix this stayed `false`.
+      expect(loading()).toBe(false); // settled back to false after sync completion
+    });
+
+    it('is true while the source is still pending', () => {
+      const loading = createFakeSignal(false);
+      const source$ = new Subject<number>();
+
+      source$.pipe(withLoading(loading)).subscribe();
+
+      expect(loading()).toBe(true);
+    });
+  });
 });
