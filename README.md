@@ -7,6 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react)
 
 Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method. Stop hand-rolling `loading`/`error`/`success` boilerplate around every API call.
 
@@ -54,6 +55,16 @@ readonly user$ = this.fetchUser(this.id).pipe(
   catchToState(this.error),
   bindTo(this.data),
 );
+```
+
+## Examples
+
+A live, editable React demo for every operator lives in [`examples/react`](./examples/react) — [open it in StackBlitz](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react), or run it locally:
+
+```bash
+cd examples/react
+npm install
+npm run dev
 ```
 
 ## API

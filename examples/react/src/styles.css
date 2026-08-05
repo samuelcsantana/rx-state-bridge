@@ -1,0 +1,103 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+header h1 {
+  margin-bottom: 0.25rem;
+  font-size: 1.75rem;
+}
+
+header p {
+  color: #94a3b8;
+  margin-top: 0;
+}
+
+header a {
+  color: #60a5fa;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.card h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  font-family: ui-monospace, monospace;
+}
+
+.card p {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-top: 0;
+  min-height: 2.5em;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #475569;
+  cursor: default;
+}
+
+.card p.result {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.card p.error {
+  color: #f87171;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.banner {
+  color: #fbbf24;
+  font-weight: 600;
+}
