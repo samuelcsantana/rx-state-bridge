@@ -1,15 +1,21 @@
+<div align="center">
+
 # rx-state-bridge
+
+Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method.
 
 [![npm version](https://img.shields.io/npm/v/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
 [![npm downloads](https://img.shields.io/npm/dm/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
-[![Bundle size](https://img.shields.io/bundlephobia/minzip/rx-state-bridge)](https://bundlephobia.com/package/rx-state-bridge)
 [![Build Status](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react)
 
-Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method. Stop hand-rolling `loading`/`error`/`success` boilerplate around every API call.
+![The examples/react demo: six cards, one per operator, showing live loading/error/success states](./.github/assets/screenshot.png)
+
+</div>
+
+Stop hand-rolling `loading`/`error`/`success` boilerplate around every API call.
 
 - **Zero dependencies** (RxJS is a peer dependency only)
 - **Framework-agnostic** — no React/Angular/Vue imports, ever
@@ -59,12 +65,17 @@ readonly user$ = this.fetchUser(this.id).pipe(
 
 ## Examples
 
-A live, editable React demo for every operator lives in [`examples/react`](./examples/react) — [open it in StackBlitz](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react), or run it locally:
+Live, editable demos for every operator — one card per operator, running against a fake in-memory API (no real network):
+
+- [`examples/react`](./examples/react) — [open in StackBlitz →](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react)
+- [`examples/angular`](./examples/angular) — [open in StackBlitz →](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/angular)
+
+Or run either locally:
 
 ```bash
-cd examples/react
+cd examples/react   # or examples/angular
 npm install
-npm run dev
+npm run dev          # examples/angular uses `npm run start`
 ```
 
 ## API
@@ -147,6 +158,18 @@ const isAnythingLoading = combineLoading(usersLoading, ordersLoading);
 ```
 
 It's a plain function, not an RxJS operator — call it inside your own render/`computed()` so it re-evaluates whenever any underlying value changes.
+
+## Design notes
+
+A couple of decisions in this library aren't obvious from the API surface alone. Written down here so they don't turn into repeated GitHub issues.
+
+**Why does `withSmoothLoading` delay `complete`/`error`, but `withTemporarySuccess` doesn't?**
+Both operators have a timer between "the source finished" and "the indicator settles." The difference is what that timer is _for_. `withSmoothLoading`'s grace period is a correction to the indicator's own timing — the whole point is that the operator shouldn't tell you it's done until the minimum duration has actually elapsed, so holding the stream's own completion for that (bounded, capped at `minDuration`) window is the operator being honest about when it actually finished. `withTemporarySuccess`'s reset window is different in kind: it's decorative feedback (a toast, a checkmark) layered _after_ the real work is already done. Delaying `complete` there — for the full `duration`, often 2s+ — would block whatever the caller does next (`subscribe(() => navigate())`, a chained operator) for a UI detail that has nothing to do with it. So `withSmoothLoading` fixes correctness by holding completion; `withTemporarySuccess` keeps completion immediate and instead accepts an optional `signal: AbortSignal` so a caller who actually needs to cancel the pending reset (e.g. a superseded request sharing one indicator) can opt in, without paying for it by default.
+
+This is also why `withSmoothLoading` needed no new API to become fully safe (unsubscribing during the grace window has always been the fix to reach for), while `withTemporarySuccess`'s fix is additive and opt-in — the two bugs looked identical on the surface (a detached `timer(...).subscribe(...)` with no link to the outer subscription) but the correct fix for each followed from what the timer represents, not just from "make it cancellable."
+
+**Why does an error never clear previously-received `data`?**
+`catchToState`, `bindRequestState`, and the `RequestState<T>` shape all treat a caught error as _additional_ information, not a replacement for what you already had. A failed refresh shouldn't blank out the last good screen — showing stale-but-real data next to a fresh error is almost always closer to what the UI should do than clearing to empty. If you want the old-fashioned "wipe on error" behavior, that's one line at the call site (`data: null` in your own error handler) rather than something the library should force on everyone.
 
 ## Development
 

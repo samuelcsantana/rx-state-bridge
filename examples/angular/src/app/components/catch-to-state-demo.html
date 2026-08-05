@@ -1,0 +1,13 @@
+<section class="card">
+  <h2>catchToState</h2>
+  <p>~50% fail rate on purpose — click a few times to see both paths.</p>
+  <button (click)="run()" [disabled]="loading()">
+    {{ loading() ? 'Loading…' : 'Fetch (may fail)' }}
+  </button>
+  @if (name()) {
+    <p class="result">{{ name() }}</p>
+  }
+  @if (error()) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+</section>

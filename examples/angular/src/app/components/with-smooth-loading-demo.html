@@ -1,0 +1,12 @@
+<section class="card">
+  <h2>withSmoothLoading</h2>
+  <p>minDuration = 500ms. The fast one still shows the spinner for a beat — no flicker.</p>
+  <div class="row">
+    <button (click)="runFast()" [disabled]="fastLoading()">
+      {{ fastLoading() ? 'Loading…' : 'Fast fetch (120ms)' }}
+    </button>
+    <button (click)="runSlow()" [disabled]="slowLoading()">
+      {{ slowLoading() ? 'Loading…' : 'Slow fetch (1200ms)' }}
+    </button>
+  </div>
+</section>

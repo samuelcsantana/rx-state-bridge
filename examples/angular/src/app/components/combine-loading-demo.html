@@ -1,0 +1,15 @@
+<section class="card">
+  <h2>combineLoading</h2>
+  <p>Two unrelated fetches, one global banner — not an operator, just a plain function.</p>
+  <div class="row">
+    <button (click)="fetchUsers()" [disabled]="usersLoading()">
+      {{ usersLoading() ? 'Loading users…' : 'Fetch users' }}
+    </button>
+    <button (click)="fetchOrders()" [disabled]="ordersLoading()">
+      {{ ordersLoading() ? 'Loading orders…' : 'Fetch orders' }}
+    </button>
+  </div>
+  @if (isAnythingLoading()) {
+    <p class="banner">Something is loading…</p>
+  }
+</section>

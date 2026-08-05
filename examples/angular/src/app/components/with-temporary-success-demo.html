@@ -1,0 +1,10 @@
+<section class="card">
+  <h2>withTemporarySuccess</h2>
+  <p>Flips true on success, resets to false after 2s — no manual setTimeout.</p>
+  <button (click)="run()" [disabled]="loading()">
+    {{ loading() ? 'Saving…' : 'Save' }}
+  </button>
+  @if (saved()) {
+    <span class="badge">✓ Saved</span>
+  }
+</section>

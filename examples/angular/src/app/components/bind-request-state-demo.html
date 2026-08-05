@@ -1,0 +1,13 @@
+<section class="card">
+  <h2>bindRequestState</h2>
+  <p>One state instead of three — {{ '{ loading, error, data }' }} in a single write.</p>
+  <button (click)="run()" [disabled]="user().loading">
+    {{ user().loading ? 'Loading…' : 'Fetch (may fail)' }}
+  </button>
+  @if (user().data) {
+    <p class="result">{{ user().data?.name }}</p>
+  }
+  @if (user().error) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+</section>
