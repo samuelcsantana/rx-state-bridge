@@ -21,5 +21,5 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
-  ignorePatterns: ['dist', 'node_modules', 'coverage', '*.config.ts'],
+  ignorePatterns: ['dist', 'node_modules', 'coverage', '*.config.ts', 'examples'],
 };
