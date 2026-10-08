@@ -9,6 +9,9 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:
   contents: write
   pull-requests: write
+  # npm trusted publishing: the publish step trades this job's OIDC token for a
+  # short-lived npm credential, so no long-lived NPM_TOKEN secret is needed.
+  id-token: write
 
 jobs:
   release:
@@ -18,10 +21,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Trusted publishing needs npm >= 11.5.1; Node 20 bundles npm 10, which
+      # fails the OIDC exchange with a misleading 404 instead of an auth error.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
           cache: 'npm'
+
+      - run: npm --version
 
       - run: npm ci
 
@@ -30,6 +37,8 @@ jobs:
       - run: npm run test
       - run: npm run build
 
+      # NPM_TOKEN must stay unset: when it is present, changesets/action writes it
+      # into ~/.npmrc and npm publishes with that token instead of OIDC.
       - name: Create release PR or publish to npm
         uses: changesets/action@v1
         with:
@@ -38,4 +47,3 @@ jobs:
           title: 'chore: version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
