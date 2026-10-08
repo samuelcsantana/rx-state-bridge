@@ -18,7 +18,9 @@ updates:
       vitest:
         patterns: [vitest, '@vitest/*']
       typescript-eslint:
-        patterns: ['@typescript-eslint/*']
+        patterns: [typescript-eslint, '@typescript-eslint/*']
+      eslint:
+        patterns: [eslint, '@eslint/*']
       minor-and-patch:
         update-types: [minor, patch]
       # Groups only cover version updates unless they say otherwise, and a
@@ -28,7 +30,10 @@ updates:
         patterns: [vitest, '@vitest/*']
       typescript-eslint-security:
         applies-to: security-updates
-        patterns: ['@typescript-eslint/*']
+        patterns: [typescript-eslint, '@typescript-eslint/*']
+      eslint-security:
+        applies-to: security-updates
+        patterns: [eslint, '@eslint/*']
     ignore:
       # The Changesets CLI and changesets/action majors are coupled (action v2
       # refuses CLI v2), so a major of either is upgraded together, by hand.
