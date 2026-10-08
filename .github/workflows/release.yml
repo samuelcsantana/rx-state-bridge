@@ -17,13 +17,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       # Trusted publishing needs npm >= 11.5.1; Node 20 bundles npm 10, which
       # fails the OIDC exchange with a misleading 404 instead of an auth error.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.x
           cache: 'npm'
@@ -40,7 +40,7 @@ jobs:
       # NPM_TOKEN must stay unset: when it is present, changesets/action writes it
       # into ~/.npmrc and npm publishes with that token instead of OIDC.
       - name: Create release PR or publish to npm
-        uses: changesets/action@v1
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
         with:
           publish: npm run release
           commit: 'chore: version packages'
