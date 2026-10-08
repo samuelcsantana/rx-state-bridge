@@ -1,5 +1,11 @@
 # rx-state-bridge
 
+## 1.2.3
+
+### Patch Changes
+
+- 0b6ad7c: Refresh the README shown on npm: light/dark cover, live demo link and CI, coverage and CodeQL badges. No code changes.
+
 ## 1.2.2
 
 ### Patch Changes
