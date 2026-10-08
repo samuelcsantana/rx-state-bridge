@@ -1,5 +1,8 @@
 # Contributing to rx-state-bridge
 
+Everyone taking part is expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md). Security
+issues go through [private vulnerability reporting](./SECURITY.md), never a public issue.
+
 ## Branching
 
 This repo uses **GitHub Flow** — one long-lived branch (`main`), everything else is short-lived:
