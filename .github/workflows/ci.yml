@@ -50,6 +50,28 @@ jobs:
       - run: npm ci
       - run: npm run test
 
+  coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Codecov authenticates the upload with this job's OIDC token, so the
+      # repository needs no CODECOV_TOKEN secret.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run test:coverage
+      # A Codecov outage must not block a merge; the badge just goes stale.
+      - uses: codecov/codecov-action@v7
+        with:
+          files: coverage/lcov.info
+          use_oidc: true
+          fail_ci_if_error: false
+
   build:
     runs-on: ubuntu-latest
     steps:
