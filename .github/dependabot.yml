@@ -11,12 +11,23 @@ updates:
       prefix-development: build
       include: scope
     groups:
-      minor-and-patch:
-        update-types: [minor, patch]
       # Packages that must move in lockstep, or npm ci fails on peer ranges.
+      # Dependabot puts a dependency in the first group it matches, so these come
+      # before the catch-all: listed after it, their majors matched minor-and-patch
+      # first, were filtered out by update-types and arrived one package per PR.
       vitest:
         patterns: [vitest, '@vitest/*']
       typescript-eslint:
+        patterns: ['@typescript-eslint/*']
+      minor-and-patch:
+        update-types: [minor, patch]
+      # Groups only cover version updates unless they say otherwise, and a
+      # security fix in one of these packages needs its siblings just the same.
+      vitest-security:
+        applies-to: security-updates
+        patterns: [vitest, '@vitest/*']
+      typescript-eslint-security:
+        applies-to: security-updates
         patterns: ['@typescript-eslint/*']
     ignore:
       # Changesets CLI v3 also needs changesets/action v2; upgrade both by hand.
