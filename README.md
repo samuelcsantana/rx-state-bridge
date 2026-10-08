@@ -1,17 +1,25 @@
 <div align="center">
 
-# rx-state-bridge
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/samuelcsantana/rx-state-bridge/main/.github/assets/cover-dark.png">
+  <img alt="rx-state-bridge — RxJS streams, bridged into UI state" src="https://raw.githubusercontent.com/samuelcsantana/rx-state-bridge/main/.github/assets/cover-light.png" width="100%">
+</picture>
 
-Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method.
+**Framework-agnostic RxJS operators that bridge async streams with UI state primitives — React Hooks, Angular Signals, Vue Refs, or anything else exposing a callback or a `.set()` method.**
 
+[![CI](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/samuelcsantana/rx-state-bridge/graph/badge.svg)](https://codecov.io/gh/samuelcsantana/rx-state-bridge)
+[![CodeQL](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/codeql.yml)
+<br>
 [![npm version](https://img.shields.io/npm/v/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
 [![npm downloads](https://img.shields.io/npm/dm/rx-state-bridge.svg)](https://www.npmjs.com/package/rx-state-bridge)
-[![Build Status](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelcsantana/rx-state-bridge/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](https://www.typescriptlang.org/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
+[![License: MIT](https://img.shields.io/github/license/samuelcsantana/rx-state-bridge)](https://github.com/samuelcsantana/rx-state-bridge/blob/main/LICENSE)
+[![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://github.com/samuelcsantana/rx-state-bridge/blob/main/tsconfig.json)
+[![Zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/samuelcsantana/rx-state-bridge/blob/main/package.json)
 
-![The examples/react demo: six cards, one per operator, showing live loading/error/success states](./.github/assets/screenshot.png)
+**[Live demo](https://samuelcsantana.github.io/rx-state-bridge/)** — every operator running in the browser against a fake API, no install needed.
+
+<a href="https://samuelcsantana.github.io/rx-state-bridge/"><img alt="The live demo: six cards, one per operator, showing loading, error and success states as they happen" src="https://raw.githubusercontent.com/samuelcsantana/rx-state-bridge/main/.github/assets/screenshot.png" width="100%"></a>
 
 </div>
 
@@ -65,7 +73,7 @@ readonly user$ = this.fetchUser(this.id).pipe(
 
 ## Examples
 
-Live, editable demos for every operator — one card per operator, running against a fake in-memory API (no real network):
+Live, editable demos for every operator — one card per operator, running against a fake in-memory API (no real network). The React one is also deployed from `main` as the [live demo](https://samuelcsantana.github.io/rx-state-bridge/):
 
 - [`examples/react`](./examples/react) — [open in StackBlitz →](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/react)
 - [`examples/angular`](./examples/angular) — [open in StackBlitz →](https://stackblitz.com/github/samuelcsantana/rx-state-bridge/tree/main/examples/angular)
