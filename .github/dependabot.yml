@@ -51,6 +51,24 @@ updates:
       react-example:
         patterns: ['*']
 
+  # Not deployed, but public, and the Angular CLI pulls in a large dev-server
+  # tree that collects advisories. Majors go through `ng update`, which runs
+  # Angular's code migrations, so only minor and patch updates come from here.
+  - package-ecosystem: npm
+    directory: /examples/angular
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      angular-example:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: '*'
+        update-types: [version-update:semver-major]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
