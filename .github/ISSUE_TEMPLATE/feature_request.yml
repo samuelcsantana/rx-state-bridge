@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an improvement or a new operator.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        The library stays deliberately small: operators that move async results into UI state.
+        Retry and backoff, caching, staleness and pagination are out of scope; data-fetching
+        libraries such as TanStack Query already cover them well.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: The boilerplate you keep writing around an observable, and why the current operators do not remove it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How you would like to write it instead, as a short pipeline.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
