@@ -1,5 +1,11 @@
 # rx-state-bridge
 
+## 1.2.4
+
+### Patch Changes
+
+- 5d35a2a: No changes to the published code. Releases now go through a new pipeline (Changesets v3, npm trusted publishing from a dedicated publish job), and this version exercises it end to end.
+
 ## 1.2.3
 
 ### Patch Changes
