@@ -1,0 +1,54 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+      prefix-development: build
+      include: scope
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+      # Packages that must move in lockstep, or npm ci fails on peer ranges.
+      vitest:
+        patterns: [vitest, '@vitest/*']
+      typescript-eslint:
+        patterns: ['@typescript-eslint/*']
+    ignore:
+      # Changesets CLI v3 also needs changesets/action v2; upgrade both by hand.
+      - dependency-name: '@changesets/cli'
+        update-types: [version-update:semver-major]
+      # TypeScript 7 is the native-compiler rewrite, and tsup emits the .d.ts files
+      # through the compiler; move to it deliberately, not from a bot pull request.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+
+  # The live demo deployed to GitHub Pages; one grouped pull request a week.
+  - package-ecosystem: npm
+    directory: /examples/react
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      react-example:
+        patterns: ['*']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: ci
+      include: scope
+    ignore:
+      # v2 requires Changesets CLI v3; see the npm entry above.
+      - dependency-name: changesets/action
+        update-types: [version-update:semver-major]
