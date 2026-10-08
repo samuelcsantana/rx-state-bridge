@@ -30,7 +30,8 @@ updates:
         applies-to: security-updates
         patterns: ['@typescript-eslint/*']
     ignore:
-      # Changesets CLI v3 also needs changesets/action v2; upgrade both by hand.
+      # The Changesets CLI and changesets/action majors are coupled (action v2
+      # refuses CLI v2), so a major of either is upgraded together, by hand.
       - dependency-name: '@changesets/cli'
         update-types: [version-update:semver-major]
       # TypeScript 7 is the native-compiler rewrite, and tsup emits the .d.ts files
@@ -78,6 +79,6 @@ updates:
       prefix: ci
       include: scope
     ignore:
-      # v2 requires Changesets CLI v3; see the npm entry above.
+      # Coupled to the Changesets CLI major; see the npm entry above.
       - dependency-name: changesets/action
         update-types: [version-update:semver-major]
